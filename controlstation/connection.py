@@ -25,11 +25,17 @@ class ControlConnection():
         return str(self.sock.recv(1025), 'utf-8')
 
     def send_info(self):
-        '''Transmit information about GCS
-        Expects map with keys 'ip', 'port'
         '''
-        message = 'MESSAGE-ip:{0}-port:{1}'.format(self.gcs_info['ip'],
-                                                   self.gcs_info['port'])
+        Transmit information about GCS
+        Expects a map
+        '''
+        # message = 'MESSAGE-ip:{0}-port:{1}'.format(self.gcs_info['ip'],
+        #                                            self.gcs_info['port'])
+        message = 'MESSAGE'
+        for k, v in self.gcs_info.items():
+            message += '-{0}:{1}'.format(k, v)
+        print(message)
+
         self.sock.sendall(bytes(message, 'utf-8'))
 
         response = self.read()
@@ -61,7 +67,8 @@ class ControlConnection():
         self.sock = None
 
 
-details = {'ip': '127.0.0.1', 'port': 14550}
+details = {'ip': '127.0.0.1', 'port': 14550,
+           'video_bitrate': 500000, 'video_fps': 15}
 
 drone_connection = ControlConnection('localhost', 9999, details)
 
@@ -81,10 +88,10 @@ if drone_connection.start_video():
 else:
     print('error')
 
-if drone_connection.command_shutdown():
-    print('Command successful')
-else:
-    print('error')
+# if drone_connection.command_shutdown():
+#     print('Command successful')
+# else:
+#     print('error')
 
 
 drone_connection.close()

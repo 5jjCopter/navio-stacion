@@ -24,11 +24,14 @@ class StationHandler():
         return -1
 
     def handle_message(self, station, data):
+        '''
+        If settings needs to be sent.
+        Do it as an message.
+        '''
         parts = data.split('-')
         for kv in parts[1:]:
             (key, val) = kv.split(':')
-            if key not in station.gcs_info:
-                station.gcs_info[key] = val
+            station.gcs_info[key] = val
         return 1
 
     def handle_command(self, station, data):
@@ -104,6 +107,9 @@ HOST = 'localhost'
 PORT = 9999
 station = DroneStation(HOST, PORT, StationHandler)
 
+# Need to handle disconnecting clients.
+# Also multiple clients might be a good idea in case of trouble?
 station.run()
-print(station.gcs_info)
+
+# print(station.gcs_info)
 station.close()
