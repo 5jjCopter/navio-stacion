@@ -1,5 +1,5 @@
 #!/usr/bin/env python3.6
-
+import time
 import socket
 import sys
 
@@ -18,8 +18,10 @@ class ControlConnection():
         self.sock.connect((host, port))
         self.gcs_info = gcs_info
 
-    def send(self):
-        self.sock.sendall(bytes('hello', 'utf-8'))
+    def send(self, message):
+        self.sock.sendall(bytes(message, 'utf-8'))
+        response = self.read()
+        return message.upper() == response
 
     def read(self):
         return str(self.sock.recv(1025), 'utf-8')
@@ -34,33 +36,23 @@ class ControlConnection():
         message = 'MESSAGE'
         for k, v in self.gcs_info.items():
             message += '-{0}:{1}'.format(k, v)
-        print(message)
-
-        self.sock.sendall(bytes(message, 'utf-8'))
-
-        response = self.read()
-        return message.upper() == response
+        return self.send(message)
 
     def command_connection(self):
         message = 'COMMAND-CONNECT'
-        self.sock.sendall(bytes(message, 'utf-8'))
-
-        response = self.read()
-        return message.upper() == response
+        return self.send(message)
 
     def command_shutdown(self):
         message = 'COMMAND-SHUTDOWN'
-        self.sock.sendall(bytes(message, 'utf-8'))
-
-        response = self.read()
-        return message.upper() == response
+        return self.send(message)
 
     def start_video(self):
         message = 'COMMAND-START_VIDEO'
-        self.sock.sendall(bytes(message, 'utf-8'))
+        return self.send(message)
 
-        response = self.read()
-        return message.upper() == response
+    def start_killswitch(self):
+        message = 'COMMAND-START_KILLSWITCH'
+        return self.send(message)
 
     def close(self):
         self.sock.close()
@@ -77,7 +69,6 @@ if drone_connection.send_info():
 else:
     print('error')
 
-
 if drone_connection.command_connection():
     print('Command successful')
 else:
@@ -88,10 +79,15 @@ if drone_connection.start_video():
 else:
     print('error')
 
-# if drone_connection.command_shutdown():
-#     print('Command successful')
-# else:
-#     print('error')
+if drone_connection.start_killswitch():
+    print('Command successful')
+else:
+    print('error')
 
+
+if drone_connection.command_shutdown():
+    print('Command successful')
+else:
+    print('error')
 
 drone_connection.close()
