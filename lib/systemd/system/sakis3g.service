@@ -1,0 +1,30 @@
+[Unit]
+Description=3G modem module
+Wants=network-online.target
+After=network.target network-online.target sys-subsystem-net-devices-wwan0.device
+
+[Service]
+
+###############################################################################
+####### DO NOT EDIT ABOVE THIS LINE UNLESS YOU KNOW WHAT YOU"RE DOING #########
+###############################################################################
+User=root
+ExecStart=/usr/sbin/sakis3g connect --console APN=online.telia.se
+ExecStop=/usr/sbin/sakis3g disconnect
+RemainAfterExit=yes
+Type=forking
+Restart=on-failure
+#RestartSec=30
+
+##### CAUTION ######
+# There should be only one uncommented ExecStart in this file
+# Comment out unused ExecStart. 
+
+###############################################################################
+######## DO NOT EDIT BELOW THIS LINE UNLESS YOU KNOW WHAT YOU"RE DOING ########
+###############################################################################
+
+#Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
