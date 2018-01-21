@@ -1,0 +1,28 @@
+[Unit]
+Description=Beacon Module. Sends IP to control station
+Wants=network-online.target
+After=network.target network-online.target 
+
+[Service]
+
+###############################################################################
+####### DO NOT EDIT ABOVE THIS LINE UNLESS YOU KNOW WHAT YOU"RE DOING #########
+###############################################################################
+User=pi
+ExecStart=/usr/sbin/beacon.py
+Type=simple
+#Restart=on-failure
+#RestartSec=30
+
+##### CAUTION ######
+# There should be only one uncommented ExecStart in this file
+# Comment out unused ExecStart. 
+
+###############################################################################
+######## DO NOT EDIT BELOW THIS LINE UNLESS YOU KNOW WHAT YOU"RE DOING ########
+###############################################################################
+
+#Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
