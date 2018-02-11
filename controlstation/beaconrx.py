@@ -32,10 +32,11 @@ class BeaconRx():
         self.p.start()
 
     def close(self):
+        self.p.terminate()
+        self.p.join()
         self.server_sock.close()
         self.server_sock = None
         self.sockets = []
-        self.p.terminate()
 
     def get_ip(self, timeout=None):
         '''
@@ -58,7 +59,10 @@ class BeaconRx():
         data = str(data, 'utf-8')
         if data:
             self.drone_ip = data
-            self.s['ip'] = self.drone_ip
+            try:
+                self.s['ip'] = self.drone_ip
+            except BrokenPipeError as e:
+                print('Unable to pass on ip\n{}'.format(e))
         else:
             # print('{0} \t disconnected'.format(conn.getpeername()[0]))
             return -1

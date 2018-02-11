@@ -34,7 +34,7 @@ class SSHtunnels():
             timer += 1
             if timer > timeout:
                 self.tunnel.terminate()
-                raise TimeoutError
+                raise TimeoutError('Tunnel to {} failed'.format(local_port))
 
     def close(self):
         self.tunnel.terminate()
